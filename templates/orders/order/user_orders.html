@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% load tz %} <!-- загрузка временной зоны для форматирования даты -->
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center my-4">Мои заказы</h2>
+    {% if orders %}
+        <ul class="list-group list-group-flush">
+            {% for order in orders %}
+                <li class="list-group-item">
+                    <strong>Заказ №{{ order.id }}</strong>- {{ order.get_total_cost|floatformat:0 }} руб.
+                    <ul class="list-group mt-2">
+                        {% for item in order.items.all %}
+                            <li class="list-group-item">
+                                {{ item.quantity }}x {{ item.product.name }} - {{ item.get_cost|floatformat:0 }} руб.
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-center mt-4">У вас нет заказов.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center pt-4">
+                    <h2>Оформление заказа</h2>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-center">Ваш заказ</h3>
+                    <div class="order-info">
+                        <ul class="list-group list-group-flush">
+                            {% for item in cart %}
+                                <li class="list-group-item">
+                                    {{ item.quantity }}x {{ item.product.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p class="text-center mt-3"><b>Итого:</b> {{ cart.get_total_price|floatformat:0 }} руб.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+  .text-center {
+    text-align: center;
+  }
+  .my-4 {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .mt-2 {
+    margin-top: 0.5rem;
+  }
+  .mt-3 {
+    margin-top: 1rem;
+  }
+  .mt-4 {
+    margin-top: 1.5rem;
+  }
+  .mt-5 {
+    margin-top: 3rem;
+  }
+  .list-group-item {
+    border: none;
+    padding: 0.75rem 1.25rem;
+  }
+  .card {
+    border-radius: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: none;
+  }
+  .card-body {
+    padding: 2rem;
+  }
+</style>

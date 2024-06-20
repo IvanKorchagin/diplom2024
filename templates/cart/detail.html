@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+  .cart-item {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quantity-controls button {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #4E067F; /* добавляем обводку цвета 4E067F */
+    color: #4E067F; /* цвет текста */
+    border-radius: 5px;
+  }
+  
+  .price {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  
+  .total h4 {
+    font-weight: bold;
+  }
+
+  .cart-title {
+    font-size: 2em; /* уменьшаем размер заголовка */
+    color: #333; /* цвет текста заголовка */
+    justify-content: center; /* выравнивание текста по центру */
+    margin-bottom: 20px; /* добавляем отступ снизу */
+  }
+
+  .btn-outline-secondary {
+    border: 2px solid #4E067F; /* обводка кнопок цвета 4E067F */
+    color: #4E067F; /* цвет текста */
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: #4E067F; /* изменяем фон при наведении */
+    color: white; /* изменяем цвет текста при наведении */
+  }
+
+  .btn-primary {
+    border: 2px solid #4E067F; /* обводка кнопок цвета 4E067F */
+    background-color: #4E067F; /* фон кнопок цвета 4E067F */
+    box-shadow: none; /* убираем тень */
+  }
+
+  .btn-primary:hover {
+    background-color: #3A045F; /* изменяем фон при наведении */
+    border-color: #3A045F; /* изменяем цвет обводки при наведении */
+  }
+
+  .btn-danger {
+    border: none; /* убираем рамку */
+    background: none; /* убираем фон */
+    color: #dc3545; /* красный цвет текста */
+    text-decoration: none;
+  }
+
+  .btn-danger:hover {
+    background-color: transparent; /* убираем фон при наведении */
+    color: #dc3545; /* красный цвет текста */
+    text-decoration: underline; /* подчёркивание текста */
+  }
+</style>
+
+<div class=" text-center container mt-2 mb-5">
+    <div class=" cart-title mt-5">
+      <div class=" title">
+        <h1>Корзина</h1>
+      </div>
+    </div>
+</div>
+
+<div class="container">
+  <div class="cart-items">
+    {% if cart|length == 0 %}
+      <div class="text-center">
+        <p>Ваша корзина пуста.</p>
+        <a href="{% url 'miradashop:product_list' %}" class="btn btn-outline-secondary">Начать покупки</a>
+      </div>
+    {% else %}
+      {% for item in cart %}
+        <div class="cart-item card mb-3 p-3">
+          <div class="row">
+            <div class="col-md-3 col-sm-12">
+              <a href="{{ item.product.get_absolute_url }}">
+                <img style="width: 100%;border-radius:30px" src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}">
+              </a>
+            </div>
+            <div class="col-md-3">
+              <p>{{ item.product.name }}</p>
+            </div>
+            <div class="col-md-2 text-center">
+              <div class="quantity-controls">
+                <form id="cart-add-form-{{ item.product.id }}" method="post" action="{% url 'cart:cart_add' item.product.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                </form>
+                <span>{{ item.quantity }}</span>
+                <form id="cart-remove-form-{{ item.product.id }}" method="post" action="{% url 'cart:cart_remove_single' item.product.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-secondary">-</button>
+                </form>
+              </div>
+            </div>
+            <div class="col-md-2 text-center">
+              <p class="price">{{ item.total_price|floatformat:0  }}р.</p>
+            </div>
+            <div class="col-md-2 text-center">
+              <form id="cart-delete-form-{{ item.product.id }}" method="post" action="{% url 'cart:cart_remove' item.product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Удалить</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+      <div class="total text-right mt-4">
+        <h4>Итого: {{ cart.get_total_price|floatformat:0 }}р.</h4>
+      </div>
+      <div class="text-right mt-3">
+        <a href="{% url 'miradashop:product_list' %}" class="btn btn-outline-secondary mt-2">Продолжить покупки</a>
+        <a href="{% url 'orders:order_create' %}" class="btn btn-primary mt-2">Оформить заказ</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

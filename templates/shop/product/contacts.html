@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+    body {
+        font-family: 'Montserrat Alternates', sans-serif;
+    }
+    
+    .card {
+        font-family: 'Montserrat Alternates', sans-serif;
+        border: none; /* Добавлена светло-серая рамка */
+        margin-bottom: 20px;
+    }
+    .card-title {
+        font-size: 1.1em; /* Увеличен размер шрифта */
+        font-weight: 700; /* Увеличена жирность шрифта */
+        color: #333; /* Изменен цвет текста на более темный */
+    }
+    .card-text1, .card-text2 {
+        font-size: 0.9em; /* Немного уменьшен размер шрифта */
+        color: #555; /* Цвет текста сделан серым */
+    }
+    .card a {
+        color: #0066CC; /* Изменен цвет ссылок на синий */
+        font-size: 0.85em; /* Уменьшен размер шрифта ссылок */
+        text-decoration: underline;
+    }
+    .card-button {
+        text-align: end;
+    }
+    .card .btn {
+        border: none;
+        background-color: #007BFF; /* Изменен цвет кнопки на синий */
+        text-decoration: none;
+        color: #FFFFFF; /* Цвет текста на кнопке сделан белым */
+        padding: 10px 20px; /* Увеличен padding кнопки */
+        border-radius: 5px; /* Добавлены скругленные углы кнопки */
+    }
+    .card .btn:hover {
+        background-color: #0056b3; /* Цвет при наведении */
+    }
+    .map-container {
+        height: 100%; /* Высота карты */
+        width: 100%; /* Ширина карты */
+        background-color: #e9ecef; /* Цвет фона для карты */
+    }
+</style>
+<div class="container mt-5">
+    <div id="main" class="product-list">
+        <h1 class="text-center mb-4">Контакты</h1>
+    </div>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="map-container">
+                <!-- Вставьте сюда вашу карту, например, с помощью iframe -->
+                <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A37ea775271817ae62c8e684aa7dc530eaa8e599a6f523f657e3010b8d6227a95&amp;source=constructor" width="100%" height="450" frameborder="0"></iframe>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Телефон</div>
+                    <div class="card-text1">+7 (918) 565-75-75</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Электронная почта</div>
+                    <div class="card-text1">info@mirada.ru</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Наш адрес</div>
+                    <div class="card-text1">г. Ростов-на-Дону, ул Войкова, зд. 136-138, офис 2</div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Режим работы</div>
+                    <div class="card-text1">
+                        Будни: 9:00 - 17:00
+                        <hr>
+                        СБ-ВС: выходные
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

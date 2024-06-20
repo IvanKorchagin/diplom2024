@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'slick/slick.css' %}">
+<link rel="stylesheet" href="{% static 'slick/slick-theme.css' %}">
+
+
+<style>
+    .slider-container {
+        position: relative;
+    }
+    .slick-slide img {
+        width: 100%;
+    }
+    .slick-slide .slide-content {
+        padding: 20px;
+        text-align: center;
+    }
+    .slick-slide .slide-content h5 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    .slick-slide .slide-content button {
+        font-size: 14px;
+    }
+    body {
+        font-family: 'Montserrat Alternates', sans-serif;
+    }
+    .btn-primary {
+        background-color: #4E067F;
+        color: white;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #4E067F;
+        color: white;
+        border: none;
+        box-shadow: rgba(53, 5, 48, 0.4) 0px 2px 4px, rgba(53, 5, 48, 0.4) 0px 7px 13px -3px, rgba(53, 5, 48, 0.4) 0px -3px 0px inset;
+    }
+    .cookie-banner {
+        background-color: #f8e8c1;
+        border: 1px solid #e0b973;
+        padding: 20px;
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 40px);
+        max-width: 600px; /* Ширина баннера не более 600px */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 999; /* Должен быть выше других элементов на странице */
+    }
+    .cookie-banner button {
+        background-color: #e0b973;
+        border: none;
+        padding: 10px 20px;
+        color: white;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container mb-5">
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+      </ol>
+      <div class="carousel-inner mb-5">
+        <div class="carousel-item active">
+          <img  src="{% static 'img/slider1.png' %}" class="d-block w-100" alt="Слайд_1">
+        </div>
+        <div class="carousel-item">
+          <img  src="{% static 'img/slider2.png' %}" class="d-block w-100" alt="Слайд_2">
+        </div>
+        <div class="carousel-item">
+          <img  src="{% static 'img/slider3.png' %}" class="d-block w-100" alt="Слайд_3">
+        </div>
+      </div>
+    </div> 
+    
+  
+
+
+
+    <h2 class='mb-5 mt-5 text-center'>Почему покупатели выбирают mirada?</h2>
+    <div class="container row my-4 mb-5 mt-5 text-center">
+        <div class="col-md-3">
+            <img class='mb-2' src="{% static 'img/delivery.png' %}" alt="Быстрая доставка">
+            <p>Быстрая доставка</p>
+        </div>
+        <div class="col-md-3">
+            <img class='mb-1' src="{% static 'img/medal.png' %}" alt="Гарантия качества">
+            <p>Гарантия качества</p>
+        </div>
+        <div class="col-md-3">
+            <img class='mb-2' src="{% static 'img/discount.png' %}" alt="Много скидок">
+            <p>Много скидок</p>
+        </div>
+        <div class="col-md-3">
+            <img class='mb-2' src="{% static 'img/factory.png' %}" alt="Собственное производство">
+            <p>Собственное производство</p>
+        </div>
+    </div>
+
+    <h2 class='text-center mt-5'>Хиты продаж</h2>
+    <div class="container row mb-5 text-center">
+    </div>
+    <div class="slider-container mb-5">
+        <div class="autoplay slider">
+            {% for product in products %}
+                <div>
+                    <img style='border-radius:20px' src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <div class="slide-content">
+                        <p style="font-size:23px">{{ product.name }}</p>
+                        <h5>{{ product.price|floatformat:0 }} ₽</h5>
+                        <a class="btn btn-primary" href="{{ product.get_absolute_url }}">Подробнее</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+<script>
+  $(document).ready(function(){
+      $('.autoplay').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 1000,
+        responsive: [
+            {
+                breakpoint: 992,
+                settings: {
+                    slidesToShow: 1,
+                }
+            }
+        ]
+      });
+  });
+</script>
+{% endblock content %}

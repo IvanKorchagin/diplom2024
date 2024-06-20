@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+    body {
+        font-family: 'Montserrat Alternates', sans-serif;
+    }
+    
+    .card {
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: #333;
+    }
+
+    .card-text1, .card-text2 {
+        font-size: 0.9em;
+        color: #555;
+    }
+
+    .card a {
+        color: #0066CC;
+        font-size: 0.85em;
+        text-decoration: underline;
+    }
+
+    .card-button {
+        text-align: end;
+    }
+
+    .card .btn {
+        border: none;
+        background-color: #007BFF;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .card .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .map-container {
+        height: 100%;
+        width: 100%;
+        background-color: #e9ecef;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .organization-info {
+        font-size: 1em;
+        line-height: 1.6;
+        color: #555;
+        text-align: justify;
+    }
+
+    .organization-info h2 {
+        font-size: 1.5em;
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div id="main" class="product-list">
+        <h1 class="section-header">Об организации</h1>
+    </div>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="organization-info">
+                <h2 class='text-center' >ООО "МИРАДА"</h2>
+                <p>ООО "МИРАДА" — современная и динамично развивающаяся компания, расположенная в сердце Ростова-на-Дону. Специализируясь на оптовой торговле промышленными и техническими химическими веществами, компания также занимается производством красителей, пигментов и различных органических соединений. Это позволяет ей занимать уверенные позиции на рынке и предлагать своим клиентам широкий ассортимент продукции.</p>
+                
+                <p>Возглавляет компанию Евгений Иванович Тычинский, который является не только генеральным директором, но и учредителем. Благодаря его профессионализму и лидерским качествам, ООО "МИРАДА" успешно развивается и расширяет свою деятельность.</p>
+                
+                <p>Компания ориентирована на долгосрочные партнёрские отношения, обеспечивая высокое качество продукции и высокий уровень обслуживания. С момента своего основания в 2022 году, ООО "МИРАДА" демонстрирует стабильность и надежность, что делает её привлекательным партнёром для сотрудничества.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

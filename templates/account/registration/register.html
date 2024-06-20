@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+    body {
+        font-family: 'Montserrat Alternates', sans-serif;
+    }
+    
+    .btn-primary {
+        background-color: #4E067F;
+        color: white;
+        border: none;
+        font-size: 0.9em;  /* Уменьшение размера кнопки */
+    }
+
+    .btn-primary:hover {
+        background-color: #4E067F;
+        color: white;
+        border: none;
+        box-shadow: rgba(53, 5, 48, 0.4) 0px 2px 4px, rgba(53, 5, 48, 0.4) 0px 7px 13px -3px, rgba(53, 5, 48, 0.4) 0px -3px 0px inset;
+    }
+    
+    .form-group {
+        text-align: center;  /* Центровка полей формы */
+        margin-bottom: 1rem;  /* Отступ снизу между элементами формы */
+    }
+    
+    .form-group label {
+        display: block;  /* Лейблы и поля на отдельных строках */
+    }
+    
+    .form-check-label {
+        font-size: 15px;  /* Размер текста для чекбокса */
+    }
+
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #4E067F;  /* Цвет фона при выборе чекбокса */
+        border-color: #4E067F;  /* Цвет рамки при выборе чекбокса */
+    }
+
+    .custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+        box-shadow: none;  /* Убираем тень при фокусе */
+    }
+
+    .custom-checkbox .custom-control-input:checked:focus ~ .custom-control-label::before {
+        box-shadow: none;  /* Убираем тень при фокусе и выбранном чекбоксе */
+    }
+
+    .custom-checkbox .custom-control-label::before {
+        border: 1px solid #4E067F;  /* Цвет рамки чекбокса */
+    }
+
+    .custom-checkbox .custom-control-input:disabled ~ .custom-control-label {
+        color: #6C757D;  /* Цвет текста при отключенном чекбоксе */
+    }
+
+    .custom-checkbox .custom-control-input:disabled ~ .custom-control-label::before {
+        background-color: #E9ECEF;  /* Цвет фона при отключенном чекбоксе */
+    }
+    .card-footer a {
+        color: inherit;  /* Убрать синий цвет ссылки */
+        text-decoration: underline;  /* Добавить подчеркивание */
+    }
+    .card-footer a:hover {
+        color: inherit;  /* Убрать синий цвет ссылки */
+        text-decoration: none;
+    }
+
+</style>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">  <!-- Уменьшение ширины колонки -->
+            <div class="card">
+                <div class="card-header text-center pt-4">
+                    <h2>Регистрация</h2>
+                </div>
+                <div class="card-body">
+                    <form action="." method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            {{ user_form.username }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ user_form.email }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ user_form.password }}
+                        </div>
+                        <div class="form-group mb-3">
+                            {{ user_form.password2 }}
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="custom-control custom-checkbox" style="font-size:16px">
+                                <input type="checkbox" class="custom-control-input" id="consent2" required>
+                                <label class="custom-control-label" for="consent2">
+                                    Согласен(-на) на обработку персональных данных
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="custom-control custom-checkbox" style="font-size:16px">
+                                <input type="checkbox" class="custom-control-input" id="consent" required>
+                                <label class="custom-control-label" for="consent">
+                                    Согласен(-на) с Политикой конфиденциальности
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary ">Создать аккаунт</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p>Пожалуйста, используйте следующую форму для регистрации. Если у вас уже есть учетная запись, <a href="{% url 'account:login' %}">войдите здесь</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

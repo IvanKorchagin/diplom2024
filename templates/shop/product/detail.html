@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="..." crossorigin="anonymous">
+
+<style>
+
+    .product-image {
+        padding-top: 20px;
+    }
+    .product-image img {
+        max-width: 100%; /* Сделали изображение адаптивным */
+        max-height: 540px; /* Ограничили высоту изображения */
+        border-radius: 40px;
+    }
+    .product-details {
+        width: 100%;
+        padding: 20px;
+    }
+    .product-details h1 {
+        font-size: 1.7em;
+        margin-bottom: 10px;
+    }
+    .product-details p {
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+    .btn-group {
+        margin-top: 20px;
+    }
+    .btn-group button {
+        margin-right: 10px;
+    }
+    .favorite-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        color: #4E067F; /* Цвет сердечка */
+        font-size: 24px;
+        outline: none;
+    }
+    .favorite-btn:hover,
+    .favorite-btn:active,
+    .favorite-btn:focus {
+        outline: none; /* Убираем фокусовую обводку */
+    }
+    .favorite-btn:hover {
+        color: #4E067F; /* Цвет сердечка при наведении */
+    }
+    .favorite-btn:active {
+        color: #4E067F; /* Цвет сердечка при активации */
+    }
+    .favorite-btn:focus {
+        color: #4E067F; /* Цвет сердечка при фокусе */
+    }
+</style>
+
+<div class="container">
+    <div class='row'>
+    <div class="product-image col-md-6 col-sm-12">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" alt="{{ product.name }}">
+    </div>
+    <div class="product-details col-md-6 col-sm-12">
+        <h1 class="pt-2">{{ product.name }}</h1>
+        <p>Описание: {{ product.description }}</p>
+        <p>Производитель: Россия</p>
+        <p>Комплектация: Автоэмаль-1 канистра</p>
+        <h3>Цена: {{ product.price|floatformat:0 }} р.</h3>
+        <div class="btn-group">
+            {% if request.user.is_authenticated %}
+            <form id="cart-add-form" method="post" action="{% url 'cart:cart_add' product.id %}">
+                {% csrf_token %}
+                {{ cart_product_form }}
+                <button type="submit" class="btn btn-primary">В корзину</button>
+            </form>
+            <button class="pt-1 favorite-btn {% if product.is_favorited %}active{% endif %}" data-product-id="{{ product.id }}" data-is-favorited="{% if product.is_favorited %}true{% else %}false{% endif %}">
+                {% if product.is_favorited %}
+                    <i class="fas fa-heart"></i> <!-- Иконка сердечка заполненного -->
+                {% else %}
+                    <i class="far fa-heart"></i> <!-- Иконка сердечка пустого -->
+                {% endif %}
+            </button>
+            {%endif%}    
+            {% if not request.user.is_authenticated %}
+                            
+            <div class="mr-3 add-to-cart-form">
+                <a  href="{% url 'account:login' %}" class="btn btn-primary">В корзину</a>
+            </div>
+                
+            {%endif%}       
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        // Функция для установки состояния кнопки "Избранное"
+        function setFavoriteButtonState(productId, isFavorited) {
+            var btn = $('.favorite-btn[data-product-id="' + productId + '"]');
+            if (isFavorited) {
+                btn.addClass('active');
+                btn.find('i').removeClass('far').addClass('fas');
+                btn.data('is-favorited', true);
+            } else {
+                btn.removeClass('active');
+                btn.find('i').removeClass('fas').addClass('far');
+                btn.data('is-favorited', false);
+            }
+        }
+
+        // Обработчик клика по кнопке "Избранное"
+        $('.favorite-btn').click(function(){
+            var btn = $(this);
+            var productId = btn.data('product-id');
+            var isFavorite = btn.data('is-favorited');
+            var url = isFavorite ? '{% url "miradashop:remove_from_favorites" 0 %}'.slice(0, -2) + productId + '/' : '{% url "miradashop:add_to_favorites" 0 %}'.slice(0, -2) + productId + '/';
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                success: function(response) {
+                    if (response.status === 'added') {
+                        btn.addClass('active');
+                        btn.find('i').removeClass('far').addClass('fas');
+                        btn.data('is-favorited', true);
+                        // Сохраняем состояние в localStorage
+                        localStorage.setItem('favorite_' + productId, 'true');
+                    } else if (response.status === 'removed') {
+                        btn.removeClass('active');
+                        btn.find('i').removeClass('fas').addClass('far');
+                        btn.data('is-favorited', false);
+                        // Удаляем состояние из localStorage
+                        localStorage.removeItem('favorite_' + productId);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при выполнении AJAX-запроса:', error);
+                }
+            });
+        });
+
+        // Проверяем состояние из localStorage при загрузке страницы
+        $('.favorite-btn').each(function() {
+            var btn = $(this);
+            var productId = btn.data('product-id');
+            var isFavorited = localStorage.getItem('favorite_' + productId) === 'true';
+            setFavoriteButtonState(productId, isFavorited);
+        });
+
+        $('#cart-add-form').submit(function(event){
+            event.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: form.serialize(),
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                success: function(response) {
+                    $('#cartModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Ошибка при выполнении AJAX-запроса:', error);
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

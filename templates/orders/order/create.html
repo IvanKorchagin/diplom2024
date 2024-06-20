@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<style>
+    body {
+        font-family: 'Montserrat Alternates', sans-serif;
+    }
+    
+    .btn-primary {
+        background-color: #4E067F;
+        color: white;
+        border: none;
+        font-size: 0.9em;
+    }
+
+    .btn-primary:hover {
+        background-color: #4E067F;
+        color: white;
+        border: none;
+        box-shadow: rgba(53, 5, 48, 0.4) 0px 2px 4px, rgba(53, 5, 48, 0.4) 0px 7px 13px -3px, rgba(53, 5, 48, 0.4) 0px -3px 0px inset;
+    }
+        
+    .form-group {
+        text-align: center;
+    }
+    
+    .form-group label {
+        display: block;
+        font-size: 15px;
+    }
+    
+    .card-footer a {
+        color: inherit;
+        text-decoration: underline;
+    }
+    
+    .card-footer a:hover {
+        text-decoration: none;
+    }
+
+    .order-info ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .order-info ul li {
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center pt-4">
+                    <h2>Оформление заказа</h2>
+                </div>
+                <div class="card-body">
+                    <h3>Ваш заказ</h3>
+                    <div class="order-info">
+                        <ul>
+                            {% for item in cart %}
+                                <li>
+                                    {{ item.quantity }}x {{ item.product.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p><b>Итого:</b> {{ cart.get_total_price }} руб.</p>
+                    </div>
+                    <form action="." method="post" class="order-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.email }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.address }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.postal_code }}
+                        </div>
+                        <p class='text-center pt-2'><input type="submit" class="btn btn-primary" value="Оформить заказ"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

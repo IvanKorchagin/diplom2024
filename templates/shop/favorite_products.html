@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="..." crossorigin="anonymous" /> <!-- Подключение Font Awesome -->
+
+<style>
+    .card {
+        border: none;
+        transition: transform 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px); /* эффект поднятия при наведении */
+    }
+    .card-title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .card-img-top {
+        object-fit: cover; /* чтобы изображение вписывалось в рамку */
+        border-radius: 30px 30px 30px 30px; /* скругление углов у изображения */
+        transition: transform 0.5s ease;
+    }
+    .card:hover {
+        transform: scale(1.06); /* увеличение изображения при наведении */
+    }
+    .card-body {
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .card-text {
+        font-size: 14px;
+        font-weight: 600;
+        font-size: 20px;
+        padding-right: 80px;    
+    }
+    @media (min-width: 1200px) {
+        .card-text {
+            padding-right: 95px;
+        }
+    }
+    
+    @media (max-width: 1199px) and (min-width: 992px) {
+        .card-text {
+            padding-right: 80px;
+        }
+    }
+    
+    @media (max-width: 767px) and (min-width: 380px) {
+        .card-text {
+            padding-right: 100px;
+        }
+    }
+    @media (max-width: 1200px) and (min-width: 990px) {
+        .card-text {
+            padding-right: 40px;
+        }
+    }
+
+    
+    .price-and-button {
+        display: flex;
+        justify-content: space-between;
+
+    }
+    .btn-sm {
+        margin-left: auto; /* Чтобы кнопка была максимально справа */
+    }
+
+    /* Стили для иконки сердечка */
+    .remove-favorite-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        color: #4E067F; /* Цвет сердечка */
+        font-size:24px;
+        outline: none;
+    }
+
+    .remove-favorite-btn:hover,
+    .remove-favorite-btn:active,
+    .remove-favorite-btn:focus {
+        outline: none; /* Убираем фокусовую обводку */
+    }
+
+    .remove-favorite-btn:hover {
+        color: #4E067F; /* Цвет сердечка */
+        border: none;
+        background: none;
+    }
+
+    .remove-favorite-btn:active {
+        color: #4E067F; /* Цвет сердечка */
+        border: none;
+        background: none;
+    }
+    .remove-favorite-btn:focus {
+        color: #4E067F; /* Цвет сердечка */
+        border: none;
+        background: none;
+    }
+</style>
+
+<div class="container mt-5">
+    <div id="main" class="product-list">
+        <h1 class="text-center mb-4">Избранное</h1>
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-6 col-lg-4 col-sm-12 mb-4">
+                <div class="card">
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class="card-img-top" alt="{{ product.name }}">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <div class="price-and-button">
+                            <p class="card-text">{{ product.price|floatformat:0 }}р.</p>
+                            <form id="cart-add-form mr-3" method="post" action="{% url 'cart:cart_add' product.id %}">
+                                {% csrf_token %}
+                                {{ cart_product_form}}
+                                <button type="submit" class="btn btn-primary">В корзину</button>
+                            </form>
+                            <button class="remove-favorite-btn" data-product-id="{{ product.id }}">
+                                <i class=" pt-1 fas fa-heart"></i> <!-- Иконка сердечка -->
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.remove-favorite-btn').click(function(){
+            var btn = $(this);
+            var productId = btn.data('product-id');
+            var url = '{% url "miradashop:remove_from_favorites" 0 %}'.slice(0, -2) + productId + '/';
+            
+            $.ajax({
+                url: url,
+                method: 'POST',
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                success: function(response) {
+                    if (response.status === 'removed') {
+                        btn.find('i').removeClass('fas').addClass('far'); // Изменяем иконку на пустое сердце
+                        btn.closest('.col-md-6').fadeOut(300, function() {
+                            $(this).remove(); // Удаляем родительский элемент колонки
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
